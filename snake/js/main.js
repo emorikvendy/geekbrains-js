@@ -139,11 +139,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (game.snake.cells[0].apple) {
                     game.snake.cells[0].apple = false;
                 } else {
-                    let tail = game.snake.cells.shift()
-                    let node =
-                        document.querySelector(`#root > .row:nth-child(${tail.y + 1}) > .cell:nth-child(${tail.x + 1})`);
-                    if (node !== null) {
-                        node.classList.remove('snake');
+                    let tail = game.snake.cells.shift(), head = game.snake.cells[game.snake.cells.length-1];
+                    if(tail.x !== head.x || tail.y !== head.y) {
+                        let node =
+                            document.querySelector(`#root > .row:nth-child(${tail.y + 1}) > .cell:nth-child(${tail.x + 1})`);
+                        if (node !== null) {
+                            node.classList.remove('snake');
+                        }
                     }
                 }
             },
