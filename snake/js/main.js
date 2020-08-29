@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
         },
         score: 0,
         started: false,
+        paused: false,
         play: null,
         init: function (start_game = true) {
             if (game.started) {
@@ -29,6 +30,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 game.started = true;
                 game.snake.init()
                 game.apple.init()
+                game.play = setInterval(game.snake.move, 350 - game.settings.speed * 50);
             }
         },
         createField: function () {
@@ -46,17 +48,31 @@ document.addEventListener("DOMContentLoaded", function () {
                 document.getElementById('id02').style.display = 'block'
             }
         },
+        pause: function () {
+            if (game.started) {
+                game.paused = true;
+                clearInterval(game.play);
+            }
+        },
+        resume: function () {
+            if (game.started) {
+                game.paused = false;
+                game.play = setInterval(game.snake.move, 350 - game.settings.speed * 50);
+            }
+        },
         snake: {
             cells: [],
             prev_direction: null,
             direction: null, // 0 - top, 1 - right, 2 - bottom, 3 - left
             move: function () {
                 let head = game.snake.addHead();
-                if (head.x === game.settings.width || head.y === game.settings.height || head.x < 0 || head.y < 0 ||
-                    game.snake.checkIntersection(head, game.snake.cells.slice(0, -1))) {
+                if (head.x === game.settings.width || head.y === game.settings.height || head.x < 0 || head.y < 0) {
                     game.gameOver();
                 } else {
                     game.snake.cutTail();
+                    if (game.snake.checkIntersection(head, game.snake.cells.slice(0, -1))) {
+                        game.gameOver();
+                    }
                     if (head.x === game.apple.x && head.y === game.apple.y) {
                         game.apple.hide();
                         head.apple = true;
@@ -79,7 +95,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 game.snake.show();
                 let head = game.snake.addHead();
                 game.snake.cells.push(head);
-                game.play = setInterval(game.snake.move, 350 - game.settings.speed * 50);
 
             },
             setDirection: function (value) {
@@ -246,6 +261,21 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     })
     game.init(false);
+    let pause = document.getElementById("pause");
+    if (pause !== null) {
+        pause.addEventListener('click', function (event) {
+            event.preventDefault()
+            if (game.started) {
+                if (game.paused) {
+                    game.resume()
+                    event.target.innerText = 'Pause'
+                } else {
+                    game.pause()
+                    event.target.innerText = 'Resume'
+                }
+            }
+        })
+    }
 });
 (function (element) {
     element.matches = element.matches || element.mozMatchesSelector || element.msMatchesSelector || element.oMatchesSelector || element.webkitMatchesSelector;
