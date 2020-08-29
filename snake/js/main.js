@@ -235,8 +235,16 @@ document.addEventListener("DOMContentLoaded", function () {
             document.getElementById('height').value = game.settings.height;
             document.getElementById('width').value = game.settings.width;
             document.getElementById('speed').value = game.settings.speed;
-        })
+        });
     });
+    let modals = document.querySelectorAll('.modal');
+    modals.forEach(function (modal) {
+        modal.addEventListener('click', function (event) {
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+        });
+    })
     game.init(false);
 });
 (function (element) {
