@@ -52,11 +52,13 @@ document.addEventListener("DOMContentLoaded", function () {
             direction: null, // 0 - top, 1 - right, 2 - bottom, 3 - left
             move: function () {
                 let head = game.snake.addHead();
-                if (head.x === game.settings.width || head.y === game.settings.height || head.x < 0 || head.y < 0 ||
-                    game.snake.checkIntersection(head, game.snake.cells.slice(0, -1))) {
+                if (head.x === game.settings.width || head.y === game.settings.height || head.x < 0 || head.y < 0) {
                     game.gameOver();
                 } else {
                     game.snake.cutTail();
+                    if (game.snake.checkIntersection(head, game.snake.cells.slice(0, -1))) {
+                        game.gameOver();
+                    }
                     if (head.x === game.apple.x && head.y === game.apple.y) {
                         game.apple.hide();
                         head.apple = true;
