@@ -30,6 +30,9 @@ button {
     cursor: pointer;
     width: 100%;
 }
+#pause {
+    background-color: #666;
+}
 
 button:hover {
     opacity: 0.8;

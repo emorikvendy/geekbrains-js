@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
         },
         score: 0,
         started: false,
+        paused: false,
         play: null,
         init: function (start_game = true) {
             if (game.started) {
@@ -29,6 +30,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 game.started = true;
                 game.snake.init()
                 game.apple.init()
+                game.play = setInterval(game.snake.move, 350 - game.settings.speed * 50);
             }
         },
         createField: function () {
@@ -44,6 +46,18 @@ document.addEventListener("DOMContentLoaded", function () {
                 container.innerHTML = `<h2>Игра окончена</h2><h3>Ваш результат ${game.score}</h3>
 <button type="button" onclick="document.getElementById('id02').style.display='none'" class="cancel_button">Ok</button>`
                 document.getElementById('id02').style.display = 'block'
+            }
+        },
+        pause: function () {
+            if (game.started) {
+                game.paused = true;
+                clearInterval(game.play);
+            }
+        },
+        resume: function () {
+            if (game.started) {
+                game.paused = false;
+                game.play = setInterval(game.snake.move, 350 - game.settings.speed * 50);
             }
         },
         snake: {
@@ -81,7 +95,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 game.snake.show();
                 let head = game.snake.addHead();
                 game.snake.cells.push(head);
-                game.play = setInterval(game.snake.move, 350 - game.settings.speed * 50);
 
             },
             setDirection: function (value) {
@@ -248,6 +261,21 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     })
     game.init(false);
+    let pause = document.getElementById("pause");
+    if (pause !== null) {
+        pause.addEventListener('click', function (event) {
+            event.preventDefault()
+            if (game.started) {
+                if (game.paused) {
+                    game.resume()
+                    event.target.innerText = 'Pause'
+                } else {
+                    game.pause()
+                    event.target.innerText = 'Resume'
+                }
+            }
+        })
+    }
 });
 (function (element) {
     element.matches = element.matches || element.mozMatchesSelector || element.msMatchesSelector || element.oMatchesSelector || element.webkitMatchesSelector;
