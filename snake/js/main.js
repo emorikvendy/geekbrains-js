@@ -4,7 +4,8 @@ document.addEventListener("DOMContentLoaded", function () {
         settings: {
             height: null,
             width: null,
-            speed: 1
+            speed: 1,
+            fieldShape: null
         },
         score: 0,
         started: false,
@@ -16,12 +17,15 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             let formData = new FormData(document.getElementById('settings'));
             let height = parseInt(formData.get('height')), width = parseInt(formData.get('width')),
-                speed = parseInt(formData.get('speed'));
-
+                speed = parseInt(formData.get('speed')), fieldShape = formData.get('fieldShape');
+            if (['thor', 'border-box', 'vertical_cylinder', 'horizontal_cylinder'].indexOf(fieldShape) === -1) {
+                fieldShape = 'border-box';
+            }
             game.settings = {
                 height: Math.max(10, Math.min(30, isNaN(height) ? 20 : height)),
                 width: Math.max(10, Math.min(30, isNaN(width) ? 20 : width)),
-                speed: Math.max(1, Math.min(5, isNaN(speed) ? 2 : speed))
+                speed: Math.max(1, Math.min(5, isNaN(speed) ? 2 : speed)),
+                fieldShape: fieldShape
             };
 
             game.score = 0;
@@ -120,6 +124,20 @@ document.addEventListener("DOMContentLoaded", function () {
                         head = {x: old_head.x - 1, y: old_head.y, apple: false};
                         break;
                 }
+                if (game.settings.fieldShape === 'thor' || game.settings.fieldShape === 'vertical_cylinder') {
+                    if (head.x === -1) {
+                        head.x = game.settings.width - 1;
+                    } else if (head.x === game.settings.width) {
+                        head.x = 0
+                    }
+                }
+                if (game.settings.fieldShape === 'thor' || game.settings.fieldShape === 'horizontal_cylinder') {
+                    if (head.y === -1) {
+                        head.y = game.settings.height - 1
+                    } else if (head.y === game.settings.height) {
+                        head.y = 0;
+                    }
+                }
                 let node = document.querySelector(`#root > .row:nth-child(${head.y + 1}) > .cell:nth-child(${head.x + 1})`);
                 if (node !== null) {
                     node.classList.add('snake');
@@ -139,8 +157,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (game.snake.cells[0].apple) {
                     game.snake.cells[0].apple = false;
                 } else {
-                    let tail = game.snake.cells.shift(), head = game.snake.cells[game.snake.cells.length-1];
-                    if(tail.x !== head.x || tail.y !== head.y) {
+                    let tail = game.snake.cells.shift(), head = game.snake.cells[game.snake.cells.length - 1];
+                    if (tail.x !== head.x || tail.y !== head.y) {
                         let node =
                             document.querySelector(`#root > .row:nth-child(${tail.y + 1}) > .cell:nth-child(${tail.x + 1})`);
                         if (node !== null) {
