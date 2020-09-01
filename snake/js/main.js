@@ -312,7 +312,7 @@ window.game = {
             }
         },
     }
-}
+};
 (function (element) {
     element.matches = element.matches || element.mozMatchesSelector || element.msMatchesSelector || element.oMatchesSelector || element.webkitMatchesSelector;
     element.closest = element.closest || function closest(selector) {
