@@ -37,9 +37,9 @@
     }
 
     class AttachedPost extends Post {
+        highlighted = false;
         constructor(author, text, date) {
             super(author, text, date);
-            this.highlighted = false;
         }
 
         makeTextHighlighted() {
